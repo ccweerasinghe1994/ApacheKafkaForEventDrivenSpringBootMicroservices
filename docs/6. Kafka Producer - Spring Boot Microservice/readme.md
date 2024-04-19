@@ -341,7 +341,150 @@ public class ProductServiceImpl implements ProductService {
 
 ## 15. Kafka Producer Send Message Synchronously
 
+```java
+package com.wchamarakafka.ws.products.service;
+
+import com.wchamarakafka.ws.products.rest.CreateProductResModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
+import org.springframework.stereotype.Service;
+
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+
+@Service
+public class ProductServiceImpl implements ProductService {
+    private final Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
+    KafkaTemplate<String, ProductCreatedEvent> kafkaTemplate;
+
+    public ProductServiceImpl(KafkaTemplate<String, ProductCreatedEvent> kafkaTemplate) {
+        this.kafkaTemplate = kafkaTemplate;
+    }
+
+    @Override
+    public String createProduct(CreateProductResModel createProductResModel) throws ExecutionException, InterruptedException {
+
+        String productId = UUID.randomUUID().toString();
+//        TODO: Implement the logic to save the product in the database
+
+        ProductCreatedEvent productCreatedEvent = new ProductCreatedEvent(productId,
+                createProductResModel.getTitle(), createProductResModel.getPrice(),
+                createProductResModel.getQuantity());
+
+        SendResult<String, ProductCreatedEvent> result = kafkaTemplate.send("product-created-events-topic", productId, productCreatedEvent).get();
+
+        logger.info("************ Product created event sent: {}", productId);
+        return productId;
+    }
+}
+```
+
 ## 16. Kafka Producer Handle Exception in Rest Controller
+
+```java
+package com.wchamarakafka.ws.products.service;
+
+import com.wchamarakafka.ws.products.rest.CreateProductResModel;
+
+import java.util.concurrent.ExecutionException;
+
+public interface ProductService {
+    String createProduct(CreateProductResModel createProductResModel) throws ExecutionException, InterruptedException;
+}
+
+```
+
+```java
+package com.wchamarakafka.ws.products.rest;
+
+import java.util.Date;
+
+public class ErrorMessage {
+    private Date timestamp;
+    private String message;
+    private String details;
+
+    public ErrorMessage() {
+    }
+
+    public ErrorMessage(Date timestamp, String message, String details) {
+        this.timestamp = timestamp;
+        this.message = message;
+        this.details = details;
+    }
+
+    public Date getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getDetails() {
+        return details;
+    }
+
+    public void setDetails(String details) {
+        this.details = details;
+    }
+}
+
+```
+
+```java
+package com.wchamarakafka.ws.products.rest;
+
+import com.wchamarakafka.ws.products.service.ProductService;
+import org.slf4j.Logger;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Date;
+import java.util.concurrent.ExecutionException;
+
+@RestController
+@RequestMapping("/products")
+public class ProductController {
+    private final Logger logger = org.slf4j.LoggerFactory.getLogger(ProductController.class);
+    private final ProductService productService;
+
+    public ProductController(ProductService productService) {
+        this.productService = productService;
+    }
+
+    @PostMapping
+    public ResponseEntity<Object> createProduct(@RequestBody CreateProductResModel createProductResModel) {
+        String productId = null;
+        try {
+            productId = productService.createProduct(createProductResModel);
+        } catch (ExecutionException | InterruptedException e) {
+            logger.error("An error occurred while creating the product", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorMessage(new Date(), e.getMessage(), "/products"));
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(productId);
+    }
+}
+
+```
+
+```java
+
+```
 
 ## 17. Kafka Producer Logging Record Metadata Information
 

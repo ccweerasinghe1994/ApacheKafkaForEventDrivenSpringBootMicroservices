@@ -277,32 +277,53 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * This class is a service that handles product-related operations.
+ * It implements the ProductService interface.
+ */
 @Service
 public class ProductServiceImpl implements ProductService {
+    // Logger for logging information and errors
     private final Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
+    // KafkaTemplate for sending messages to Kafka topics
     KafkaTemplate<String, ProductCreatedEvent> kafkaTemplate;
 
+    /**
+     * Constructor for the ProductServiceImpl class.
+     * @param kafkaTemplate KafkaTemplate for sending messages to Kafka topics
+     */
     public ProductServiceImpl(KafkaTemplate<String, ProductCreatedEvent> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 
+    /**
+     * This method creates a product and sends a product created event to a Kafka topic.
+     * @param createProductResModel The model containing the product details
+     * @return The ID of the created product
+     */
     @Override
     public String createProduct(CreateProductResModel createProductResModel) {
 
+        // Generate a unique ID for the product
         String productId = UUID.randomUUID().toString();
-//        TODO: Implement the logic to save the product in the database
+        // TODO: Implement the logic to save the product in the database
 
+        // Create a new product created event
         ProductCreatedEvent productCreatedEvent = new ProductCreatedEvent(productId,
                 createProductResModel.getTitle(), createProductResModel.getPrice(),
                 createProductResModel.getQuantity());
 
+        // Send the product created event to the Kafka topic
         CompletableFuture<SendResult<String, ProductCreatedEvent>> future = kafkaTemplate.send("product-created-events-topic", productId, productCreatedEvent);
 
+        // Handle the result of the send operation
         future.whenComplete((sendResult, throwable) -> {
             if (throwable == null) {
+                // Log the successful send operation
                 logger.info("Product created event sent successfully: {}", sendResult.getProducerRecord().value());
                 logger.info("Product MetaData: {}", sendResult.getRecordMetadata());
             } else {
+                // Log the error in the send operation
                 System.out.println("Error sending product created event: " + throwable.getMessage());
             }
         });
@@ -310,10 +331,13 @@ public class ProductServiceImpl implements ProductService {
         return productId;
     }
 }
-
 ```
 
 ## 14. Kafka Asynchronous Send. Trying how it works
+
+![alt text](image-11.png)
+![alt text](image-13.png)
+![alt text](image-12.png)
 
 ## 15. Kafka Producer Send Message Synchronously
 

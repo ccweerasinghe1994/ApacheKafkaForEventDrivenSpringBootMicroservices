@@ -33,13 +33,13 @@ public class ProductServiceImpl implements ProductService {
 
         future.whenComplete((sendResult, throwable) -> {
             if (throwable == null) {
-                logger.info("Product created event sent successfully: {}", sendResult.getProducerRecord().value());
-                logger.info("Product MetaData: {}", sendResult.getRecordMetadata());
+                logger.info("************ Product created event sent successfully: {}", sendResult.getProducerRecord().value());
+                logger.info("************ Product MetaData: {}", sendResult.getRecordMetadata());
             } else {
-                System.out.println("Error sending product created event: " + throwable.getMessage());
+                logger.error("************ Error sending product created event: {}", throwable.getMessage());
             }
         });
-        future.join();
+        logger.info("************ Product created event sent: {}", productId);
         return productId;
     }
 }

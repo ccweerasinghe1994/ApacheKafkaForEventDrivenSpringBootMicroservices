@@ -2,9 +2,21 @@
 
 ## 2. Introduction to Kafka Producer
 
+![alt text](image.png)
+![alt text](image-1.png)
+
 ## 3. Kafka Producer - Introduction to synchronous communication style
 
+![alt text](image-3.png)
+![alt text](image-4.png)
+![alt text](image-5.png)
+![alt text](image-6.png)
+![alt text](image-7.png)
+![alt text](image-8.png)
+
 ## 4. Kafka Producer - A use case for asynchronous communication style
+
+![alt text](image-9.png)
 
 ## 6. Creating a new Spring Boot project
 

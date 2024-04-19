@@ -29,9 +29,15 @@ public class ProductServiceImpl implements ProductService {
                 createProductResModel.getTitle(), createProductResModel.getPrice(),
                 createProductResModel.getQuantity());
 
+        logger.info("🚀************ Before sending the event to Kafka ************");
         SendResult<String, ProductCreatedEvent> result = kafkaTemplate.send("product-created-events-topic", productId, productCreatedEvent).get();
+        logger.info("🚀************ After sending the event to Kafka ************");
+        logger.info("🚀Sent the event to Kafka with key: {}", result.getProducerRecord().key());
+        logger.info("🚀Sent the event to Kafka with offset: {}", result.getRecordMetadata().offset());
+        logger.info("🚀Sent the event to Kafka with partition: {}", result.getRecordMetadata().partition());
+        logger.info("🚀Sent the event to Kafka with topic: {}", result.getRecordMetadata().topic());
 
-        logger.info("************ Product created event sent: {}", productId);
+
         return productId;
     }
 }

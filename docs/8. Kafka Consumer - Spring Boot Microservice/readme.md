@@ -18,6 +18,23 @@ let's create a new Spring Boot project using Spring Initializr. with dependencie
 
 ## 4. Kafka Consumer Configuration Properties
 
+```yaml
+server:
+  port:
+spring:
+  application:
+    name: EmailNotificationMicroservice
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092,localhost:9094
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      group-id: products-created-events
+      properties:
+        spring.json.trusted.packages: '*'
+
+```
+
 ## 5. Kafka Consumer with @KafkaEventListener and @KafkaHandler annotations
 
 ## 6. Creating the core module

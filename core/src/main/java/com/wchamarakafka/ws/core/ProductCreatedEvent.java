@@ -1,4 +1,4 @@
-package com.wchamarakafka.ws.products.service;
+package com.wchamarakafka.ws.core;
 
 import java.math.BigDecimal;
 

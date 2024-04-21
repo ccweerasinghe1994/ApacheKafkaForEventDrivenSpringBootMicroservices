@@ -1,5 +1,6 @@
 package com.wchamarakafka.ws.products.service;
 
+import com.wchamarakafka.ws.core.ProductCreatedEvent;
 import com.wchamarakafka.ws.products.rest.CreateProductResModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

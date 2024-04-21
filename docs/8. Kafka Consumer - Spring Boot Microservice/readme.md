@@ -200,6 +200,71 @@ public class KafkaConsumerConfiguration {
 
 ## 10. Kafka Listener Container Factory
 
+![alt text](image-7.png)
+![alt text](image-8.png)
+
 ## 11. Trying if Kafka Consumer Bean Configuration works
 
-products\rest\CreateProductResModel.java
+```java
+/**
+ * This class provides the configuration for the Kafka consumer in the email notification service.
+ * It sets up the necessary properties for the consumer, such as the bootstrap servers, group ID,
+ * key and value deserializers, and trusted packages for JSON deserialization.
+ */
+package com.wchamarakafka.ws.emailnotification;
+
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.common.serialization.StringDeserializer;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
+import org.springframework.kafka.core.ConsumerFactory;
+import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.support.serializer.JsonDeserializer;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Configuration class for Kafka consumer.
+ */
+@Configuration
+public class KafkaConsumerConfiguration {
+
+    Environment environment;
+
+    public KafkaConsumerConfiguration(Environment environment) {
+        this.environment = environment;
+    }
+
+    /**
+     * Creates a Kafka consumer factory.
+     *
+     * @return The Kafka consumer factory.
+     */
+    @Bean
+    public ConsumerFactory<String, Object> consumerFactory() {
+        Map<String, Object> config = new HashMap<>();
+        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, environment.getProperty("spring.kafka.consumer.bootstrap-servers"));
+        config.put(ConsumerConfig.GROUP_ID_CONFIG, environment.getProperty("spring.kafka.consumer.group-id"));
+        config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+        config.put(JsonDeserializer.TRUSTED_PACKAGES, environment.getProperty("spring.kafka.consumer.properties.spring.json.trusted.packages"));
+        return new DefaultKafkaConsumerFactory<>(config);
+    }
+
+    /**
+     * Creates a Kafka listener container factory.
+     *
+     * @return The Kafka listener container factory.
+     */
+    @Bean
+    ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, Object> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactory());
+        return factory;
+    }
+
+}
+```

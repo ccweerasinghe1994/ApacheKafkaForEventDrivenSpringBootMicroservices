@@ -62,6 +62,94 @@ public class ProductCreatedHandler {
 
 ## 6. Creating the core module
 
+let's create a new module called `core` and add the following classes:
+remove main class and the test file as well.
+
+![alt text](image-5.png)
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.2.5</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>com.wchamarakafka.ws</groupId>
+    <artifactId>core</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>core</name>
+    <description>core</description>
+    <properties>
+        <java.version>21</java.version>
+    </properties>
+    <dependencies>
+       
+    </dependencies>
+
+
+</project>
+```
+
+```java
+package com.wchamarakafka.ws.products.service;
+
+import java.math.BigDecimal;
+
+public class ProductCreatedEvent {
+    private String productId;
+    private String title;
+    private BigDecimal price;
+    private Integer quantity;
+
+    public ProductCreatedEvent() {
+    }
+
+    public ProductCreatedEvent(String productId, String title, BigDecimal price, Integer quantity) {
+        this.productId = productId;
+        this.title = title;
+        this.price = price;
+        this.quantity = quantity;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+}
+
+```
+
 ## 7. Adding core project as a dependency
 
 ## 8. @KafkaHandler Trying how it works

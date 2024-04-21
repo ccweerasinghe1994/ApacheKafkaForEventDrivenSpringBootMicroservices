@@ -1,1 +1,3 @@
-spring.application.name=EmailNotificationMicroservice
+spring:
+  application:
+    name: EmailNotificationMicroservice

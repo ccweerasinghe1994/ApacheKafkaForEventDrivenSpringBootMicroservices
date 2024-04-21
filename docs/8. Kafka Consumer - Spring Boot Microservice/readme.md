@@ -10,6 +10,12 @@
 
 ## 3. Creating a new Spring Boot project
 
+let's create a new Spring Boot project using Spring Initializr. with dependencies:
+
+- Spring Web
+- Spring for Apache Kafka
+- Spring Boot DevTools
+
 ## 4. Kafka Consumer Configuration Properties
 
 ## 5. Kafka Consumer with @KafkaEventListener and @KafkaHandler annotations
@@ -25,3 +31,5 @@
 ## 10. Kafka Listener Container Factory
 
 ## 11. Trying if Kafka Consumer Bean Configuration works
+
+products\rest\CreateProductResModel.java

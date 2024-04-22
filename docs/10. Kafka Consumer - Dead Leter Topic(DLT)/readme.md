@@ -139,6 +139,18 @@ public class KafkaConsumerConfiguration {
 
 ## 5. Dead Letter Topic Trying how it works
 
-```java
-
+```powershell
+.\kafka-console-producer.bat --bootstrap-server localhost:9092 --topic product-created-events-topic --property "parse.key=true" --property "key.separator=:"
 ```
+
+![alt text](image-4.png)
+
+```powershell
+.\kafka-console-consumer.bat --from-beginning --topic product-created-events-topic.DLT --bootstrap-server localhost:9092 --property "print.key=true"
+```
+
+this is base64 encoded message
+`
+{asasdasd}
+`
+![alt text](image-5.png)
